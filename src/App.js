@@ -9,6 +9,7 @@ import AdminDashboard from "./Pages/AdminDashboard";
 import Login from "./Pages/Login";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useSelector } from "react-redux";
+import Header from "./Components/Header/Header";
 
 const theme = createTheme({
   palette: {
@@ -44,7 +45,10 @@ const App = () => {
       path: "/client",
       element:
         isAuthenticated && authenticatedUser?.role === "client" ? (
-          <ClientDashboard />
+          <>
+            <Header />
+            <ClientDashboard />
+          </>
         ) : (
           <Navigate to="/login" />
         ),

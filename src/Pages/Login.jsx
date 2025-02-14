@@ -13,6 +13,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -22,9 +24,11 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState("client");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const authenticatedUser = useSelector(
     (state) => state.user.authenticatedUser
   );
@@ -35,7 +39,19 @@ const Login = () => {
 
   const handleSignup = () => {
     dispatch(registerUser({ name, email, password, role }));
-    navigate("/login");
+    setSnackbarMessage(
+      "Signup successful! You can now log in with your credentials."
+    );
+    setOpenSnackbar(true);
+
+    // Clear form fields
+    setName("");
+    setEmail("");
+    setPassword("");
+    setRole("client");
+
+    // Switch to login tab
+    setActiveTab(0);
   };
 
   const handleLogin = () => {
@@ -47,6 +63,10 @@ const Login = () => {
       navigate(authenticatedUser.role === "admin" ? "/admin" : "/client");
     }
   }, [authenticatedUser, navigate]);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <Box
@@ -212,6 +232,22 @@ const Login = () => {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Snackbar for success message */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -1,21 +1,27 @@
-import { Button } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
-import { logoutUser } from "../Redux/Slices/Slice";
+import { Typography } from "@mui/material";
+import MyFiles from "../Components/LandingPage/ClientLandingPage";
+// import FilePresentIcon from "@mui/icons-material/FilePresent";
 
 const ClientDashboard = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const logout = () => {
-    dispatch(logoutUser());
-    navigate("/login");
-  };
   return (
     <div>
-      <h1>ClientDashboard</h1>
-      <Button onClick={logout}>Logout</Button>
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          gap: 1, // Adjust spacing between icon and text
+          m: 3,
+        }}
+      >
+        {/* <FilePresentIcon sx={{ fontSize: "inherit", color: "primary.main" }} /> */}
+        My Files
+      </Typography>
+
+      <MyFiles />
     </div>
   );
 };
