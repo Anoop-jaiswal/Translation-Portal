@@ -3,10 +3,10 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-// import MenuIcon from "@mui/icons-material/Menu";
-// import Sidebar from "../Sidebar/Sidebar";
+import MenuIcon from "@mui/icons-material/Menu";
+import Sidebar from "../Sidebar/Sidebar";
 import { Box } from "@mui/material";
-// import TranslateIcon from "@mui/icons-material/Translate";
+import TranslateIcon from "@mui/icons-material/Translate";
 
 const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -47,7 +47,7 @@ const Header = () => {
               gap: "8px",
             }}
           >
-            {/* <TranslateIcon /> */}
+            <TranslateIcon />
             Translation Portal
           </Typography>
           <IconButton
@@ -57,12 +57,12 @@ const Header = () => {
             sx={{ mr: 1 }}
             onClick={toggleDrawer(true)}
           >
-            {/* <MenuIcon /> */} 'menu'
+            <MenuIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      {/* <Sidebar isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} /> */}
+      <Sidebar isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
     </Box>
   );
 };

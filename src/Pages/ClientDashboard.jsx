@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@mui/material";
 import MyFiles from "../Components/LandingPage/ClientLandingPage";
-// import FilePresentIcon from "@mui/icons-material/FilePresent";
+import FilePresentIcon from "@mui/icons-material/FilePresent";
 
 const ClientDashboard = () => {
   return (
@@ -17,7 +17,7 @@ const ClientDashboard = () => {
           m: 3,
         }}
       >
-        {/* <FilePresentIcon sx={{ fontSize: "inherit", color: "primary.main" }} /> */}
+        <FilePresentIcon sx={{ fontSize: "inherit", color: "primary.main" }} />
         My Files
       </Typography>
 
