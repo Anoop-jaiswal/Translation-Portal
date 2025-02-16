@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, authenticateUser } from "../Redux/Slices/Slice";
+import {
+  registerUser,
+  authenticateUser,
+  logoutUser,
+} from "../Redux/Slices/Slice";
 import {
   Grid,
   Tabs,
@@ -33,36 +37,32 @@ const Login = () => {
     (state) => state.user.authenticatedUser
   );
 
+  useEffect(() => {
+    if (authenticatedUser) {
+      navigate(authenticatedUser.role === "admin" ? "/admin" : "/client");
+    }
+  }, [authenticatedUser, navigate]);
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   const handleSignup = () => {
     dispatch(registerUser({ name, email, password, role }));
-    setSnackbarMessage(
-      "Signup successful! You can now log in with your credentials."
-    );
+    setSnackbarMessage("Signup successful! You can now log in.");
     setOpenSnackbar(true);
 
-    // Clear form fields
     setName("");
     setEmail("");
     setPassword("");
     setRole("client");
 
-    // Switch to login tab
     setActiveTab(0);
   };
 
   const handleLogin = () => {
     dispatch(authenticateUser({ email, password }));
   };
-
-  useEffect(() => {
-    if (authenticatedUser) {
-      navigate(authenticatedUser.role === "admin" ? "/admin" : "/client");
-    }
-  }, [authenticatedUser, navigate]);
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -86,11 +86,8 @@ const Login = () => {
           maxWidth: "900px",
           backgroundColor: "white",
           borderRadius: "12px",
-          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
-          overflow: "hidden",
         }}
       >
-        {/* Left Section - Product Info */}
         <Grid
           item
           xs={12}
@@ -99,41 +96,23 @@ const Login = () => {
             background: "linear-gradient(135deg, #667eea, #764ba2)",
             color: "white",
             padding: 4,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
             textAlign: "center",
           }}
         >
           <Typography variant="h4" fontWeight="bold">
             Translation Portal
           </Typography>
-          <Typography variant="body1" sx={{ mt: 2, fontSize: "16px" }}>
-            A comprehensive translation portal providing clients with an
-            efficient and seamless translation experience. This platform
-            includes file management, status tracking, and communication
-            features for both clients and admins.
-          </Typography>
         </Grid>
 
-        {/* Right Section - Login/Signup Form */}
         <Grid item xs={12} md={6} sx={{ padding: 4 }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            centered
-            textColor="primary"
-            indicatorColor="primary"
-          >
-            <Tab label="Login" sx={{ fontSize: "16px", fontWeight: "600" }} />
-            <Tab label="Signup" sx={{ fontSize: "16px", fontWeight: "600" }} />
+          <Tabs value={activeTab} onChange={handleTabChange} centered>
+            <Tab label="Login" />
+            <Tab label="Signup" />
           </Tabs>
 
           <Grid container spacing={2} sx={{ padding: 2 }}>
             <Grid item xs={12}>
               {activeTab === 0 ? (
-                // Login Form
                 <Box>
                   <TextField
                     label="Email"
@@ -141,7 +120,6 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     margin="normal"
-                    variant="outlined"
                   />
                   <TextField
                     label="Password"
@@ -150,28 +128,17 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     margin="normal"
-                    variant="outlined"
                   />
                   <Button
                     variant="contained"
                     fullWidth
                     onClick={handleLogin}
-                    sx={{
-                      mt: 2,
-                      py: 1.5,
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
-                      "&:hover": {
-                        background: "linear-gradient(135deg, #5a67d8, #6b46c1)",
-                      },
-                    }}
+                    sx={{ mt: 2 }}
                   >
                     Login
                   </Button>
                 </Box>
               ) : (
-                // Signup Form
                 <Box>
                   <TextField
                     label="Name"
@@ -179,7 +146,6 @@ const Login = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     margin="normal"
-                    variant="outlined"
                   />
                   <TextField
                     label="Email"
@@ -187,7 +153,6 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     margin="normal"
-                    variant="outlined"
                   />
                   <TextField
                     label="Password"
@@ -196,14 +161,12 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     margin="normal"
-                    variant="outlined"
                   />
                   <FormControl fullWidth margin="normal">
                     <InputLabel>Role</InputLabel>
                     <Select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
-                      label="Role"
                     >
                       <MenuItem value="client">Client</MenuItem>
                       <MenuItem value="admin">Admin</MenuItem>
@@ -213,16 +176,7 @@ const Login = () => {
                     variant="contained"
                     fullWidth
                     onClick={handleSignup}
-                    sx={{
-                      mt: 2,
-                      py: 1.5,
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
-                      "&:hover": {
-                        background: "linear-gradient(135deg, #5a67d8, #6b46c1)",
-                      },
-                    }}
+                    sx={{ mt: 2 }}
                   >
                     Signup
                   </Button>
@@ -232,22 +186,6 @@ const Login = () => {
           </Grid>
         </Grid>
       </Grid>
-
-      {/* Snackbar for success message */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

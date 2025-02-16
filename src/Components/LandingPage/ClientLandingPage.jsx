@@ -33,9 +33,18 @@ const STATUS_COLORS = {
 };
 
 const MyFiles = () => {
-  const [files, setFiles] = useState(
-    () => JSON.parse(localStorage.getItem("files")) || []
-  );
+  // Get the logged-in user
+  const authenticatedUser =
+    JSON.parse(localStorage.getItem("authenticatedUser")) || {};
+  const userEmail = authenticatedUser.email || "";
+
+  // Load only the logged-in user's files
+  const [files, setFiles] = useState(() => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((u) => u.email === userEmail);
+    return user?.files || [];
+  });
+
   const [openModal, setOpenModal] = useState(false);
   const [openPicker, setOpenPicker] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -43,9 +52,17 @@ const MyFiles = () => {
   const [toLanguage, setToLanguage] = useState("");
   const [tat, setTat] = useState("");
 
+  // Update local storage when files change
   useEffect(() => {
-    localStorage.setItem("files", JSON.stringify(files));
-  }, [files]);
+    if (userEmail) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const userIndex = users.findIndex((u) => u.email === userEmail);
+      if (userIndex !== -1) {
+        users[userIndex].files = files;
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+    }
+  }, [files, userEmail]);
 
   const handleOpenPicker = () => {
     setOpenPicker(true);
@@ -72,6 +89,7 @@ const MyFiles = () => {
         fileUrl: uploadedFile.url,
         translatedFile: null,
       };
+
       setFiles([...files, newFile]);
       setOpenModal(false);
       setUploadedFile(null);
