@@ -21,8 +21,8 @@ const saveToLocalStorage = (key, value) => {
 };
 
 const initialState = {
-  users: loadFromLocalStorage("users") || [], // Load users from localStorage
-  authenticatedUser: loadFromLocalStorage("authenticatedUser") || null, // Load current authenticated user
+  users: loadFromLocalStorage("users") || [],
+  authenticatedUser: loadFromLocalStorage("authenticatedUser") || null,
 };
 
 const userSlice = createSlice({
@@ -31,15 +31,11 @@ const userSlice = createSlice({
   reducers: {
     registerUser: (state, action) => {
       const { email } = action.payload;
-
-      // Check if user already exists
       const existingUser = state.users.find((user) => user.email === email);
       if (existingUser) {
         alert("User with this email already exists!");
         return;
       }
-
-      // Add user with an empty files array
       const newUser = { ...action.payload, files: [] };
       state.users.push(newUser);
       saveToLocalStorage("users", state.users);
@@ -66,41 +62,49 @@ const userSlice = createSlice({
 
     addFileToUser: (state, action) => {
       const { email, file } = action.payload;
-
-      // Find the user by email
       const userIndex = state.users.findIndex((user) => user.email === email);
       if (userIndex !== -1) {
-        state.users[userIndex].files.push(file);
+        const fileIndex = state.users[userIndex].files.findIndex(
+          (f) => f.id === file.id
+        );
 
-        // Update authenticated user if they are the one adding files
-        if (state.authenticatedUser?.email === email) {
-          state.authenticatedUser = { ...state.users[userIndex] };
-          saveToLocalStorage("authenticatedUser", state.authenticatedUser);
+        if (fileIndex !== -1) {
+          state.users[userIndex].files[fileIndex] = file;
+        } else {
+          state.users[userIndex].files.push(file);
         }
-
-        // Save updated users list
         saveToLocalStorage("users", state.users);
       }
     },
 
     deleteFileFromUser: (state, action) => {
       const { email, fileName } = action.payload;
-
-      // Find the user by email
       const userIndex = state.users.findIndex((user) => user.email === email);
       if (userIndex !== -1) {
         state.users[userIndex].files = state.users[userIndex].files.filter(
           (file) => file.name !== fileName
         );
 
-        // Update authenticated user if they are the one deleting files
         if (state.authenticatedUser?.email === email) {
           state.authenticatedUser = { ...state.users[userIndex] };
           saveToLocalStorage("authenticatedUser", state.authenticatedUser);
         }
-
-        // Save updated users list
         saveToLocalStorage("users", state.users);
+      }
+    },
+
+    updateFileStatus: (state, action) => {
+      const { email, file } = action.payload;
+      const userIndex = state.users.findIndex((user) => user.email === email);
+      if (userIndex !== -1) {
+        const fileIndex = state.users[userIndex].files.findIndex(
+          (f) => f.id === file.id
+        );
+
+        if (fileIndex !== -1) {
+          state.users[userIndex].files[fileIndex].status = file.status;
+          saveToLocalStorage("users", state.users);
+        }
       }
     },
   },
@@ -112,5 +116,6 @@ export const {
   logoutUser,
   addFileToUser,
   deleteFileFromUser,
+  updateFileStatus, // ✅ Added export
 } = userSlice.actions;
 export default userSlice.reducer;

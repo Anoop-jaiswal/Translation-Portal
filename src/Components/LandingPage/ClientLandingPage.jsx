@@ -123,24 +123,14 @@ const MyFiles = () => {
       >
         <Box display="flex" gap={3}>
           {Object.entries(statusCount).map(([status, count]) => (
-            <FormControlLabel
+            <Chip
               key={status}
-              control={
-                <Radio
-                  checked
-                  sx={{
-                    color: STATUS_COLORS[status],
-                    "&.Mui-checked": {
-                      color: STATUS_COLORS[status],
-                    },
-                  }}
-                />
-              }
-              label={
-                <Typography fontWeight="bold">
-                  {status}: {count}
-                </Typography>
-              }
+              label={`${status}: ${count}`}
+              sx={{
+                backgroundColor: STATUS_COLORS[status],
+                color: "white",
+                fontWeight: "bold",
+              }}
             />
           ))}
         </Box>

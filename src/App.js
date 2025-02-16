@@ -57,7 +57,10 @@ const App = () => {
       path: "/admin",
       element:
         isAuthenticated && authenticatedUser?.role === "admin" ? (
-          <AdminDashboard />
+          <>
+            <Header />
+            <AdminDashboard />
+          </>
         ) : (
           <Navigate to="/login" />
         ),
