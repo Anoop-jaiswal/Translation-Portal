@@ -11,7 +11,6 @@ import {
   Button,
   IconButton,
   Box,
-  Input,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -25,6 +24,7 @@ import {
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { PickerOverlay } from "filestack-react";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -37,6 +37,7 @@ const MyFiles = () => {
     () => JSON.parse(localStorage.getItem("files")) || []
   );
   const [openModal, setOpenModal] = useState(false);
+  const [openPicker, setOpenPicker] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fromLanguage, setFromLanguage] = useState("");
   const [toLanguage, setToLanguage] = useState("");
@@ -46,10 +47,15 @@ const MyFiles = () => {
     localStorage.setItem("files", JSON.stringify(files));
   }, [files]);
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+  const handleOpenPicker = () => {
+    setOpenPicker(true);
+  };
+
+  const handleFileUpload = (res) => {
+    if (res.filesUploaded.length > 0) {
+      const file = res.filesUploaded[0];
       setUploadedFile(file);
+      setOpenPicker(false);
       setOpenModal(true);
     }
   };
@@ -62,7 +68,8 @@ const MyFiles = () => {
         toLanguage,
         tat: `${tat} hours`,
         status: "Uploaded",
-        fileName: uploadedFile.name,
+        fileName: uploadedFile.filename,
+        fileUrl: uploadedFile.url,
         translatedFile: null,
       };
       setFiles([...files, newFile]);
@@ -85,6 +92,8 @@ const MyFiles = () => {
     },
     { Uploaded: 0, "In Progress": 0, Completed: 0 }
   );
+
+  let apiKey = "AuxSCyn1SbGrSK5q1Rohgz";
 
   return (
     <Container sx={{ width: "100%", px: 3, mt: 4 }}>
@@ -120,15 +129,10 @@ const MyFiles = () => {
 
         <Button
           variant="contained"
-          component="label"
+          onClick={handleOpenPicker}
           startIcon={<CloudUploadIcon />}
         >
           Upload File
-          <Input
-            type="file"
-            sx={{ display: "none" }}
-            onChange={handleFileUpload}
-          />
         </Button>
       </Box>
 
@@ -159,22 +163,22 @@ const MyFiles = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow sx={{ height: "40px" }}>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>File Name</strong>
               </TableCell>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>From Language</strong>
               </TableCell>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>To Language</strong>
               </TableCell>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>TAT</strong>
               </TableCell>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>File Status</strong>
               </TableCell>
-              <TableCell sx={{ py: 1 }}>
+              <TableCell>
                 <strong>Actions</strong>
               </TableCell>
             </TableRow>
@@ -191,14 +195,19 @@ const MyFiles = () => {
                     label={file.status}
                     variant="outlined"
                     sx={{
-                      borderColor: STATUS_COLORS[file.status], // Outline color
-                      color: STATUS_COLORS[file.status], // Text color
+                      borderColor: STATUS_COLORS[file.status],
+                      color: STATUS_COLORS[file.status],
                     }}
                   />
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>
                   {file.status === "Completed" && (
-                    <IconButton color="primary">
+                    <IconButton
+                      color="primary"
+                      component="a"
+                      href={file.fileUrl}
+                      download
+                    >
                       <DownloadIcon />
                     </IconButton>
                   )}
@@ -217,6 +226,12 @@ const MyFiles = () => {
         </Table>
       </TableContainer>
 
+      {/* File Picker */}
+      {openPicker && (
+        <PickerOverlay apikey={apiKey} onUploadDone={handleFileUpload} />
+      )}
+
+      {/* File Details Modal */}
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <DialogTitle>File Details</DialogTitle>
         <DialogContent>
