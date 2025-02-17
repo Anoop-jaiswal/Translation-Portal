@@ -51,7 +51,7 @@ const AdminDashboard = () => {
   const files = users.flatMap((user) =>
     user.files.map((file) => ({
       ...file,
-      client: user.email,
+      client: user.name,
     }))
   );
 
@@ -205,16 +205,16 @@ const AdminDashboard = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell sx={{ width: "35%" }}>
                 <strong>File Name</strong>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ width: "20%" }}>
                 <strong>Client</strong>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ width: "20%" }}>
                 <strong>Status</strong>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ width: "25%" }}>
                 <strong>Actions</strong>
               </TableCell>
             </TableRow>
@@ -222,14 +222,12 @@ const AdminDashboard = () => {
           <TableBody>
             {files.map((file) => (
               <TableRow key={file.id}>
-                <TableCell>{file.fileName}</TableCell>
-                <TableCell>{file.client}</TableCell>
-                <TableCell>
+                <TableCell sx={{ width: "40%" }}>{file.fileName}</TableCell>
+                <TableCell sx={{ width: "15%" }}>{file.client}</TableCell>
+                <TableCell sx={{ width: "20%" }}>
                   <Select
                     value={file.status}
-                    onChange={(e) => {
-                      handleStatusChange(file, e.target.value);
-                    }}
+                    onChange={(e) => handleStatusChange(file, e.target.value)}
                     variant="standard"
                     disableUnderline
                     sx={{
@@ -242,7 +240,7 @@ const AdminDashboard = () => {
                     <MenuItem value="Completed">Completed</MenuItem>
                   </Select>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: "25%" }}>
                   {/* Download Button */}
                   <Tooltip
                     title={
@@ -302,15 +300,16 @@ const AdminDashboard = () => {
                     arrow
                   >
                     <IconButton
-                      color="secondary"
+                      color="default" // Use default to remove the primary color and apply custom styles
                       onClick={() => handleSendEmail(file)} // This sends email
                       disabled={file.status !== "Completed"} // Only enabled when status is "Completed"
                       sx={{
                         ml: 1,
                         "&:hover": {
-                          backgroundColor: "secondary.main",
-                          color: "white",
+                          backgroundColor: "#1976d2", // Professional blue color on hover
+                          color: "white", // Text color on hover
                         },
+                        color: "#1976d2", // A calm blue color for the icon
                       }}
                     >
                       <MailIcon />
