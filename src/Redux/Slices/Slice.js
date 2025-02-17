@@ -36,7 +36,8 @@ const userSlice = createSlice({
         alert("User with this email already exists!");
         return;
       }
-      const newUser = { ...action.payload, files: [] };
+      // ✅ Ensure translatedFile is initialized properly
+      const newUser = { ...action.payload, files: [], translatedFile: [] };
       state.users.push(newUser);
       saveToLocalStorage("users", state.users);
     },
@@ -107,6 +108,24 @@ const userSlice = createSlice({
         }
       }
     },
+
+    addTranslatedFileToUser: (state, action) => {
+      const { email, translatedFile } = action.payload;
+      const userIndex = state.users.findIndex((user) => user.email === email);
+      if (userIndex !== -1) {
+        // ✅ Ensure translatedFile is stored as an array
+        state.users[userIndex].translatedFile.push(translatedFile);
+
+        if (state.authenticatedUser?.email === email) {
+          state.authenticatedUser.translatedFile = [
+            ...state.authenticatedUser.translatedFile,
+            translatedFile,
+          ];
+          saveToLocalStorage("authenticatedUser", state.authenticatedUser);
+        }
+        saveToLocalStorage("users", state.users);
+      }
+    },
   },
 });
 
@@ -116,6 +135,7 @@ export const {
   logoutUser,
   addFileToUser,
   deleteFileFromUser,
-  updateFileStatus, // ✅ Added export
+  updateFileStatus,
+  addTranslatedFileToUser, // ✅ Exporting new reducer
 } = userSlice.actions;
 export default userSlice.reducer;

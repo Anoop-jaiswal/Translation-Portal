@@ -16,11 +16,19 @@ import {
   Typography,
   Chip,
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import SendIcon from "@mui/icons-material/Send";
-import { updateFileStatus, addFileToUser } from "../Redux/Slices/Slice";
+import {
+  updateFileStatus,
+  addTranslatedFileToUser,
+} from "../Redux/Slices/Slice";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -34,6 +42,7 @@ const AdminDashboard = () => {
 
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [translatedFile, setTranslatedFile] = useState(null);
 
   const files = users.flatMap((user) =>
     user.files.map((file) => ({
@@ -60,7 +69,6 @@ const AdminDashboard = () => {
     setOpenUploadModal(true);
   };
 
-  // 📩 Send email using "mailto:"
   const handleSendEmail = (file) => {
     const subject = encodeURIComponent("Your Translated File is Ready!");
     const body = encodeURIComponent(
@@ -73,6 +81,43 @@ const AdminDashboard = () => {
   const handleStatusChange = (file, newStatus) => {
     const updatedFile = { ...file, status: newStatus };
     dispatch(updateFileStatus({ email: file.client, file: updatedFile }));
+  };
+
+  // 🆕 Handle file input change
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setTranslatedFile(file);
+  };
+
+  // 🆕 Handle file upload submission
+  const handleUploadSubmit = () => {
+    if (!translatedFile || !selectedFile) {
+      alert("Please select a file first.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const fileData = {
+        id: new Date().getTime(), // Generate unique ID
+        name: translatedFile.name,
+        content: reader.result, // Store file content
+        uploadedAt: new Date().toISOString(),
+      };
+
+      dispatch(
+        addTranslatedFileToUser({
+          email: selectedFile.client,
+          translatedFile: fileData,
+        })
+      );
+
+      setOpenUploadModal(false);
+      setTranslatedFile(null);
+      setSelectedFile(null);
+    };
+
+    reader.readAsDataURL(translatedFile);
   };
 
   return (
@@ -99,26 +144,7 @@ const AdminDashboard = () => {
       <TableContainer
         component={Paper}
         elevation={3}
-        sx={{
-          maxHeight: "60vh",
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            width: "1px", // Thin scrollbar width
-            height: "4px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "#f0f0f0", // Light gray track
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "#888", // Dark gray thumb
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555", // Darker thumb on hover
-          },
-          scrollbarWidth: "2px", // For Firefox
-        }}
+        sx={{ maxHeight: "60vh", overflow: "auto" }}
       >
         <Table stickyHeader>
           <TableHead>
@@ -173,10 +199,7 @@ const AdminDashboard = () => {
                     onClick={() => handleUploadClick(file)}
                     startIcon={<CloudUploadIcon />}
                     sx={{ ml: 1 }}
-                    disabled={
-                      file.status === "Uploaded" ||
-                      file.status === "In Progress"
-                    }
+                    disabled={file.status !== "Completed"}
                   >
                     Upload Translated
                   </Button>
@@ -188,7 +211,7 @@ const AdminDashboard = () => {
                     onClick={() => handleSendEmail(file)}
                     startIcon={<SendIcon />}
                     sx={{ ml: 1 }}
-                    disabled={file.status !== "Completed"} // Only allow sending when completed
+                    disabled={file.status !== "Completed"}
                   >
                     Send Email
                   </Button>
@@ -198,6 +221,28 @@ const AdminDashboard = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Upload Translated File Modal */}
+      <Dialog open={openUploadModal} onClose={() => setOpenUploadModal(false)}>
+        <DialogTitle>Upload Translated File</DialogTitle>
+        <DialogContent>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            accept=".pdf,.docx,.txt"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenUploadModal(false)}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleUploadSubmit}
+          >
+            Upload
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
