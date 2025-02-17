@@ -252,6 +252,35 @@ const MyFiles = () => {
         </Table>
       </TableContainer>
 
+      {files.length === 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            height: "50vh",
+            textAlign: "center",
+          }}
+        >
+          <FilePresentIcon sx={{ fontSize: 80, color: "#888" }} />
+          <Typography variant="h5" sx={{ mt: 2, color: "#888" }}>
+            You haven't uploaded any files yet
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, color: "#888" }}>
+            Start by uploading a file to begin translating
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleOpenPicker}
+            startIcon={<CloudUploadIcon />}
+            sx={{ mt: 3 }}
+          >
+            Upload File
+          </Button>
+        </Box>
+      )}
+
       {/* File Picker */}
       {openPicker && (
         <PickerOverlay apikey={apiKey} onUploadDone={handleFileUpload} />

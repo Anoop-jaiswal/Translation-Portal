@@ -266,6 +266,22 @@ const AdminDashboard = () => {
         </Table>
       </TableContainer>
 
+      {files.length < 1 && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh", // Full viewport height
+            textAlign: "center",
+          }}
+        >
+          <Typography variant="h6" color="textSecondary">
+            No clients have uploaded any files for translation yet.
+          </Typography>
+        </Box>
+      )}
+
       {/* Upload Translated File Modal */}
       <Dialog open={openUploadModal} onClose={() => setOpenUploadModal(false)}>
         <DialogTitle>Upload Translated File</DialogTitle>

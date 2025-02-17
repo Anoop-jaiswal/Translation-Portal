@@ -15,8 +15,12 @@ import {
   MenuItem,
   Snackbar,
   Alert,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -27,6 +31,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,6 +99,10 @@ const Login = () => {
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -169,13 +178,29 @@ const Login = () => {
                   />
                   <TextField
                     label="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Toggle password type
                     fullWidth
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     margin="normal"
                     error={!!errors.password}
                     helperText={errors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                   <Button
                     variant="contained"
@@ -208,13 +233,29 @@ const Login = () => {
                   />
                   <TextField
                     label="Password"
-                    type="password"
+                    type={showPassword ? "text" : "password"} // Toggle password type
                     fullWidth
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     margin="normal"
                     error={!!errors.password}
                     helperText={errors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                   <FormControl fullWidth margin="normal">
                     <InputLabel>Role</InputLabel>
