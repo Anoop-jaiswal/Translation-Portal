@@ -51,7 +51,7 @@ const AdminDashboard = () => {
   const files = users.flatMap((user) =>
     user.files.map((file) => ({
       ...file,
-      client: user.name,
+      client: user.email,
     }))
   );
 
