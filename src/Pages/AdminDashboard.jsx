@@ -227,7 +227,9 @@ const AdminDashboard = () => {
                 <TableCell>
                   <Select
                     value={file.status}
-                    onChange={(e) => handleStatusChange(file, e.target.value)} // No modal opening here
+                    onChange={(e) => {
+                      handleStatusChange(file, e.target.value);
+                    }}
                     variant="standard"
                     disableUnderline
                     sx={{
