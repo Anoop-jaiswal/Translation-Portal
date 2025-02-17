@@ -1,40 +1,63 @@
 import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import Sidebar from "../Sidebar/Sidebar";
-import { Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Avatar,
+  Card,
+  CardContent,
+  Button,
+  Popper,
+  Grow,
+  Paper,
+  ClickAwayListener,
+} from "@mui/material";
 import TranslateIcon from "@mui/icons-material/Translate";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../../Redux/Slices/Slice";
 
-const Header = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+const Header = ({ user }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setIsDrawerOpen(open);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logout = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const defaultProfilePic =
+    "https://via.placeholder.com/150/1976d2/ffffff?text=User";
+
+  const stringAvatar = (name) => {
+    const initials = name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    return { children: initials };
   };
 
   return (
     <Box>
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: "#1976d2",
-        }}
-      >
+      <AppBar position="static" sx={{ backgroundColor: "#1976d2" }}>
         <Toolbar
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            height: "100%",
-            padding: "0 10px",
           }}
         >
           <Typography
@@ -50,19 +73,60 @@ const Header = () => {
             <TranslateIcon />
             Translation Portal
           </Typography>
-          <IconButton
-            edge="end"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 1 }}
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            {/* Avatar Clickable */}
+            <IconButton onClick={handleAvatarClick}>
+              <Avatar
+                {...stringAvatar(user?.name || "User")}
+                src={user?.profilePic || defaultProfilePic}
+              />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 
-      <Sidebar isDrawerOpen={isDrawerOpen} toggleDrawer={toggleDrawer} />
+      <Popper
+        open={open}
+        anchorEl={anchorEl}
+        role={undefined}
+        transition
+        placement="bottom-end"
+        sx={{ zIndex: 2 }}
+      >
+        {({ TransitionProps }) => (
+          <Grow {...TransitionProps}>
+            <Paper elevation={3} sx={{ mt: 1, borderRadius: 2 }}>
+              <ClickAwayListener onClickAway={handleClose}>
+                <Card sx={{ width: 250, pt: 2, textAlign: "center" }}>
+                  <Avatar
+                    src={user?.profilePic || defaultProfilePic}
+                    {...stringAvatar(user?.name || "User")}
+                    sx={{ width: 64, height: 60, margin: "0 auto" }}
+                  />
+                  <CardContent>
+                    <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                      {user?.name || "User"}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {user?.email || "user@example.com"}
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      fullWidth
+                      sx={{ mt: 3, borderRadius: 1 }}
+                      onClick={logout}
+                    >
+                      Logout
+                    </Button>
+                  </CardContent>
+                </Card>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </Box>
   );
 };

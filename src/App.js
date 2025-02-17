@@ -46,7 +46,7 @@ const App = () => {
       element:
         isAuthenticated && authenticatedUser?.role === "client" ? (
           <>
-            <Header />
+            <Header user={authenticatedUser} />
             <ClientDashboard />
           </>
         ) : (
@@ -58,7 +58,7 @@ const App = () => {
       element:
         isAuthenticated && authenticatedUser?.role === "admin" ? (
           <>
-            <Header />
+            <Header user={authenticatedUser} />
             <AdminDashboard />
           </>
         ) : (
