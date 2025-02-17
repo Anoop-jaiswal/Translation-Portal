@@ -36,7 +36,6 @@ const userSlice = createSlice({
         alert("User with this email already exists!");
         return;
       }
-      // ✅ Ensure translatedFile is initialized properly
       const newUser = { ...action.payload, files: [], translatedFile: [] };
       state.users.push(newUser);
       saveToLocalStorage("users", state.users);
@@ -113,7 +112,6 @@ const userSlice = createSlice({
       const { email, translatedFile } = action.payload;
       const userIndex = state.users.findIndex((user) => user.email === email);
       if (userIndex !== -1) {
-        // ✅ Ensure translatedFile is stored as an array
         state.users[userIndex].translatedFile.push(translatedFile);
 
         if (state.authenticatedUser?.email === email) {
@@ -126,6 +124,13 @@ const userSlice = createSlice({
         saveToLocalStorage("users", state.users);
       }
     },
+
+    // ✅ Refresh state from localStorage
+    refreshState: (state) => {
+      state.users = loadFromLocalStorage("users") || [];
+      state.authenticatedUser =
+        loadFromLocalStorage("authenticatedUser") || null;
+    },
   },
 });
 
@@ -136,6 +141,7 @@ export const {
   addFileToUser,
   deleteFileFromUser,
   updateFileStatus,
-  addTranslatedFileToUser, // ✅ Exporting new reducer
+  addTranslatedFileToUser,
+  refreshState, // ✅ Exporting refreshState function
 } = userSlice.actions;
 export default userSlice.reducer;

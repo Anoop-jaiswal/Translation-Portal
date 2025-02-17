@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Container,
@@ -28,6 +28,7 @@ import SendIcon from "@mui/icons-material/Send";
 import {
   updateFileStatus,
   addTranslatedFileToUser,
+  refreshState,
 } from "../Redux/Slices/Slice";
 import { PickerOverlay } from "filestack-react";
 
@@ -144,6 +145,14 @@ const AdminDashboard = () => {
       setSelectedFile(null);
     }
   };
+
+  const getLatestData = () => {
+    dispatch(refreshState());
+  };
+
+  useEffect(() => {
+    getLatestData();
+  }, []);
 
   let apiKey = "AuxSCyn1SbGrSK5q1Rohgz";
 
