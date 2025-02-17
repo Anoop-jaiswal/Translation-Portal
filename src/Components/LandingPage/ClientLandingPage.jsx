@@ -25,6 +25,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PickerOverlay } from "filestack-react";
+import FilePresentIcon from "@mui/icons-material/FilePresent";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -44,6 +45,14 @@ const MyFiles = () => {
     const user = users.find((u) => u.email === userEmail);
     return user?.files || [];
   });
+
+  const [translatedFiles, setTranslatedFiles] = useState(() => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((u) => u.email === userEmail);
+    return user?.translatedFile || [];
+  });
+
+  console.log(translatedFiles[0], "translatedFiles");
 
   const [openModal, setOpenModal] = useState(false);
   const [openPicker, setOpenPicker] = useState(false);
@@ -115,11 +124,15 @@ const MyFiles = () => {
 
   return (
     <Container sx={{ width: "100%", px: 3, mt: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        My Files
+      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={3}
+        mt={3}
       >
         <Box display="flex" gap={3}>
           {Object.entries(statusCount).map(([status, count]) => (
@@ -129,7 +142,6 @@ const MyFiles = () => {
               sx={{
                 backgroundColor: STATUS_COLORS[status],
                 color: "white",
-                fontWeight: "bold",
               }}
             />
           ))}
@@ -210,14 +222,20 @@ const MyFiles = () => {
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>
                   {file.status === "Completed" && (
-                    <IconButton
+                    <Button
+                      variant="contained"
+                      size="small"
                       color="primary"
                       component="a"
-                      href={file.fileUrl}
+                      href={translatedFiles[0]?.url}
                       download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      startIcon={<DownloadIcon />}
+                      sx={{ ml: 1 }}
                     >
-                      <DownloadIcon />
-                    </IconButton>
+                      Translated
+                    </Button>
                   )}
                   {file.status === "Uploaded" && (
                     <IconButton

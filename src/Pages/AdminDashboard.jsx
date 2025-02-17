@@ -29,6 +29,7 @@ import {
   updateFileStatus,
   addTranslatedFileToUser,
 } from "../Redux/Slices/Slice";
+import { PickerOverlay } from "filestack-react";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -64,9 +65,10 @@ const AdminDashboard = () => {
     window.open(fileUrl, "_blank");
   };
 
+  const [openPicker, setOpenPicker] = useState(false);
   const handleUploadClick = (file) => {
     setSelectedFile(file);
-    setOpenUploadModal(true);
+    setOpenPicker(true);
   };
 
   const handleSendEmail = (file) => {
@@ -120,14 +122,39 @@ const AdminDashboard = () => {
     reader.readAsDataURL(translatedFile);
   };
 
+  const handleFileUpload = (res) => {
+    if (res.filesUploaded.length > 0) {
+      const file = res.filesUploaded[0];
+
+      const fileData = {
+        id: new Date().getTime(),
+        name: file.filename,
+        url: file.url,
+        uploadedAt: new Date().toISOString(),
+      };
+
+      dispatch(
+        addTranslatedFileToUser({
+          email: selectedFile.client,
+          translatedFile: fileData,
+        })
+      );
+
+      setOpenPicker(false);
+      setSelectedFile(null);
+    }
+  };
+
+  let apiKey = "AuxSCyn1SbGrSK5q1Rohgz";
+
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Admin Dashboard - File Management
+        Admin Dashboard
       </Typography>
 
       {/* Status Summary */}
-      <Box display="flex" gap={3} mb={3}>
+      <Box display="flex" gap={3} mb={3} mt={3}>
         {Object.entries(statusCount).map(([status, count]) => (
           <Chip
             key={status}
@@ -135,7 +162,6 @@ const AdminDashboard = () => {
             sx={{
               backgroundColor: STATUS_COLORS[status],
               color: "white",
-              fontWeight: "bold",
             }}
           />
         ))}
@@ -144,7 +170,26 @@ const AdminDashboard = () => {
       <TableContainer
         component={Paper}
         elevation={3}
-        sx={{ maxHeight: "60vh", overflow: "auto" }}
+        sx={{
+          maxHeight: "65vh",
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: "1px", // Thin scrollbar width
+            height: "4px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f0f0f0", // Light gray track
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888", // Dark gray thumb
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555", // Darker thumb on hover
+          },
+          scrollbarWidth: "2px", // For Firefox
+        }}
       >
         <Table stickyHeader>
           <TableHead>
@@ -177,7 +222,6 @@ const AdminDashboard = () => {
                     sx={{
                       minWidth: 120,
                       color: STATUS_COLORS[file.status],
-                      fontWeight: "bold",
                     }}
                   >
                     <MenuItem value="Uploaded">Uploaded</MenuItem>
@@ -243,6 +287,10 @@ const AdminDashboard = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {openPicker && (
+        <PickerOverlay apikey={apiKey} onUploadDone={handleFileUpload} />
+      )}
     </Container>
   );
 };
