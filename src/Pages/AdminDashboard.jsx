@@ -31,6 +31,8 @@ import {
   refreshState,
 } from "../Redux/Slices/Slice";
 import { PickerOverlay } from "filestack-react";
+import Tooltip from "@mui/material/Tooltip";
+import MailIcon from "@mui/icons-material/Mail";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -167,7 +169,7 @@ const AdminDashboard = () => {
         {Object.entries(statusCount).map(([status, count]) => (
           <Chip
             key={status}
-            label={`${status}: ${count}`}
+            label={`${status} : ${count}`}
             sx={{
               backgroundColor: STATUS_COLORS[status],
               color: "white",
@@ -225,7 +227,7 @@ const AdminDashboard = () => {
                 <TableCell>
                   <Select
                     value={file.status}
-                    onChange={(e) => handleStatusChange(file, e.target.value)}
+                    onChange={(e) => handleStatusChange(file, e.target.value)} // No modal opening here
                     variant="standard"
                     disableUnderline
                     sx={{
@@ -239,35 +241,79 @@ const AdminDashboard = () => {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleDownload(file.fileUrl)}
+                  {/* Download Button */}
+                  <Tooltip
+                    title={
+                      <Typography sx={{ fontSize: "12px" }}>
+                        Download Original file
+                      </Typography>
+                    }
+                    arrow
                   >
-                    <DownloadIcon />
-                  </IconButton>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleDownload(file.fileUrl)}
+                      sx={{
+                        ml: 1,
+                        "&:hover": {
+                          backgroundColor: "primary.main",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                  </Tooltip>
 
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => handleUploadClick(file)}
-                    startIcon={<CloudUploadIcon />}
-                    sx={{ ml: 1 }}
-                    disabled={file.status !== "Completed"}
+                  {/* Upload Button */}
+                  <Tooltip
+                    title={
+                      <Typography sx={{ fontSize: "12px" }}>
+                        Upload Translated file
+                      </Typography>
+                    }
+                    arrow
                   >
-                    Upload Translated
-                  </Button>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleUploadClick(file)} // This only opens the upload modal
+                      disabled={file.status !== "Completed"} // Only enabled when status is "Completed"
+                      sx={{
+                        ml: 1,
+                        "&:hover": {
+                          backgroundColor: "primary.main",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      <CloudUploadIcon />
+                    </IconButton>
+                  </Tooltip>
 
-                  <Button
-                    variant="contained"
-                    size="small"
-                    color="secondary"
-                    onClick={() => handleSendEmail(file)}
-                    startIcon={<SendIcon />}
-                    sx={{ ml: 1 }}
-                    disabled={file.status !== "Completed"}
+                  {/* Send Email Button */}
+                  <Tooltip
+                    title={
+                      <Typography sx={{ fontSize: "12px" }}>
+                        Send mail
+                      </Typography>
+                    }
+                    arrow
                   >
-                    Send Email
-                  </Button>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleSendEmail(file)} // This sends email
+                      disabled={file.status !== "Completed"} // Only enabled when status is "Completed"
+                      sx={{
+                        ml: 1,
+                        "&:hover": {
+                          backgroundColor: "secondary.main",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      <MailIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}

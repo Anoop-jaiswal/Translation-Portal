@@ -26,6 +26,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PickerOverlay } from "filestack-react";
 import FilePresentIcon from "@mui/icons-material/FilePresent";
+import Tooltip from "@mui/material/Tooltip";
 
 const STATUS_COLORS = {
   Uploaded: "#8884d8",
@@ -138,7 +139,7 @@ const MyFiles = () => {
           {Object.entries(statusCount).map(([status, count]) => (
             <Chip
               key={status}
-              label={`${status}: ${count}`}
+              label={`${status} : ${count}`}
               sx={{
                 backgroundColor: STATUS_COLORS[status],
                 color: "white",
@@ -221,29 +222,61 @@ const MyFiles = () => {
                   />
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>
-                  {file.status === "Completed" && (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="primary"
-                      component="a"
-                      href={translatedFiles[0]?.url}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      startIcon={<DownloadIcon />}
-                      sx={{ ml: 1 }}
+                  {(file.status === "Completed" ||
+                    file.status === "In Progress") && (
+                    <Tooltip
+                      title={
+                        <Typography sx={{ fontSize: "12px" }}>
+                          Download translated file
+                        </Typography>
+                      }
+                      arrow
                     >
-                      Translated
-                    </Button>
+                      <IconButton
+                        disabled={file.status === "In Progress"}
+                        size="small"
+                        color="primary"
+                        component="a"
+                        href={translatedFiles[0]?.url}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                          ml: 1,
+                          "&:hover": {
+                            backgroundColor: "primary.main", // Button background color on hover
+                            color: "white", // Icon color on hover
+                          },
+                        }}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
                   )}
                   {file.status === "Uploaded" && (
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(file.id)}
+                    <Tooltip
+                      title={
+                        <Typography sx={{ fontSize: "12px" }}>
+                          Delete Original file
+                        </Typography>
+                      }
+                      arrow
                     >
-                      <DeleteIcon />
-                    </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(file.id)}
+                        sx={{
+                          ml: 1,
+                          "&:hover": {
+                            backgroundColor: "error.main",
+                            color: "white",
+                            borderColor: "error.main",
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
                   )}
                 </TableCell>
               </TableRow>

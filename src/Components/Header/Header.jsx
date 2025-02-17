@@ -80,6 +80,10 @@ const Header = ({ user }) => {
               <Avatar
                 {...stringAvatar(user?.name || "User")}
                 src={user?.profilePic || defaultProfilePic}
+                sx={{
+                  bgcolor: "#FFFFFF", // Gold background for avatar
+                  color: "#607D8B",
+                }}
               />
             </IconButton>
           </Box>
