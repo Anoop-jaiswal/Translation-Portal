@@ -20,11 +20,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import SendIcon from "@mui/icons-material/Send";
 import {
   updateFileStatus,
   addTranslatedFileToUser,
@@ -56,7 +54,6 @@ const AdminDashboard = () => {
     }))
   );
 
-  // Count files by status
   const statusCount = files.reduce(
     (acc, file) => {
       acc[file.status] = (acc[file.status] || 0) + 1;
@@ -89,13 +86,11 @@ const AdminDashboard = () => {
     dispatch(updateFileStatus({ email: file.client, file: updatedFile }));
   };
 
-  // 🆕 Handle file input change
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setTranslatedFile(file);
   };
 
-  // 🆕 Handle file upload submission
   const handleUploadSubmit = () => {
     if (!translatedFile || !selectedFile) {
       alert("Please select a file first.");
@@ -105,9 +100,9 @@ const AdminDashboard = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       const fileData = {
-        id: new Date().getTime(), // Generate unique ID
+        id: new Date().getTime(),
         name: translatedFile.name,
-        content: reader.result, // Store file content
+        content: reader.result,
         uploadedAt: new Date().toISOString(),
       };
 
@@ -163,7 +158,6 @@ const AdminDashboard = () => {
         Admin Dashboard
       </Typography>
 
-      {/* Status Summary */}
       <Box display="flex" gap={3} mb={3} mt={3}>
         {Object.entries(statusCount).map(([status, count]) => (
           <Chip
@@ -184,21 +178,21 @@ const AdminDashboard = () => {
           maxHeight: "65vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
-            width: "1px", // Thin scrollbar width
+            width: "1px",
             height: "4px",
           },
           "&::-webkit-scrollbar-track": {
-            background: "#f0f0f0", // Light gray track
+            background: "#f0f0f0",
             borderRadius: "10px",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#888", // Dark gray thumb
+            background: "#888",
             borderRadius: "10px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555", // Darker thumb on hover
+            background: "#555",
           },
-          scrollbarWidth: "2px", // For Firefox
+          scrollbarWidth: "2px",
         }}
       >
         <Table stickyHeader>
@@ -240,7 +234,6 @@ const AdminDashboard = () => {
                   </Select>
                 </TableCell>
                 <TableCell sx={{ width: "25%" }}>
-                  {/* Download Button */}
                   <Tooltip
                     title={
                       <Typography sx={{ fontSize: "12px" }}>
@@ -264,7 +257,6 @@ const AdminDashboard = () => {
                     </IconButton>
                   </Tooltip>
 
-                  {/* Upload Button */}
                   <Tooltip
                     title={
                       <Typography sx={{ fontSize: "12px" }}>
@@ -275,8 +267,8 @@ const AdminDashboard = () => {
                   >
                     <IconButton
                       color="primary"
-                      onClick={() => handleUploadClick(file)} // This only opens the upload modal
-                      disabled={file.status !== "Completed"} // Only enabled when status is "Completed"
+                      onClick={() => handleUploadClick(file)}
+                      disabled={file.status !== "Completed"}
                       sx={{
                         ml: 1,
                         "&:hover": {
@@ -289,7 +281,6 @@ const AdminDashboard = () => {
                     </IconButton>
                   </Tooltip>
 
-                  {/* Send Email Button */}
                   <Tooltip
                     title={
                       <Typography sx={{ fontSize: "12px" }}>
@@ -299,16 +290,16 @@ const AdminDashboard = () => {
                     arrow
                   >
                     <IconButton
-                      color="default" // Use default to remove the primary color and apply custom styles
-                      onClick={() => handleSendEmail(file)} // This sends email
-                      disabled={file.status !== "Completed"} // Only enabled when status is "Completed"
+                      color="default"
+                      onClick={() => handleSendEmail(file)}
+                      disabled={file.status !== "Completed"}
                       sx={{
                         ml: 1,
                         "&:hover": {
-                          backgroundColor: "#1976d2", // Professional blue color on hover
-                          color: "white", // Text color on hover
+                          backgroundColor: "#1976d2",
+                          color: "white",
                         },
-                        color: "#1976d2", // A calm blue color for the icon
+                        color: "#1976d2",
                       }}
                     >
                       <MailIcon />
@@ -327,7 +318,7 @@ const AdminDashboard = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "50vh", // Full viewport height
+            height: "50vh",
             textAlign: "center",
           }}
         >
@@ -337,7 +328,6 @@ const AdminDashboard = () => {
         </Box>
       )}
 
-      {/* Upload Translated File Modal */}
       <Dialog open={openUploadModal} onClose={() => setOpenUploadModal(false)}>
         <DialogTitle>Upload Translated File</DialogTitle>
         <DialogContent>

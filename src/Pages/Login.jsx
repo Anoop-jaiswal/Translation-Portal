@@ -31,7 +31,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -178,7 +178,7 @@ const Login = () => {
                   />
                   <TextField
                     label="Password"
-                    type={showPassword ? "text" : "password"} // Toggle password type
+                    type={showPassword ? "text" : "password"}
                     fullWidth
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -233,7 +233,7 @@ const Login = () => {
                   />
                   <TextField
                     label="Password"
-                    type={showPassword ? "text" : "password"} // Toggle password type
+                    type={showPassword ? "text" : "password"}
                     fullWidth
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

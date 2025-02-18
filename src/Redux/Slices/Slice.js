@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Load data from local storage
 const loadFromLocalStorage = (key) => {
   try {
     const data = localStorage.getItem(key);
@@ -11,7 +10,6 @@ const loadFromLocalStorage = (key) => {
   }
 };
 
-// Save data to local storage
 const saveToLocalStorage = (key, value) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
@@ -125,7 +123,6 @@ const userSlice = createSlice({
       }
     },
 
-    // ✅ Refresh state from localStorage
     refreshState: (state) => {
       state.users = loadFromLocalStorage("users") || [];
       state.authenticatedUser =
@@ -142,6 +139,6 @@ export const {
   deleteFileFromUser,
   updateFileStatus,
   addTranslatedFileToUser,
-  refreshState, // ✅ Exporting refreshState function
+  refreshState,
 } = userSlice.actions;
 export default userSlice.reducer;

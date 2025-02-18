@@ -75,13 +75,12 @@ const Header = ({ user }) => {
           </Typography>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            {/* Avatar Clickable */}
             <IconButton onClick={handleAvatarClick}>
               <Avatar
                 {...stringAvatar(user?.name || "User")}
                 src={user?.profilePic || defaultProfilePic}
                 sx={{
-                  bgcolor: "#FFFFFF", // Gold background for avatar
+                  bgcolor: "#FFFFFF",
                   color: "#607D8B",
                 }}
               />

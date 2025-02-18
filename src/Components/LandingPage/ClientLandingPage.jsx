@@ -17,8 +17,6 @@ import {
   DialogActions,
   TextField,
   Typography,
-  Radio,
-  FormControlLabel,
   Chip,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -35,12 +33,10 @@ const STATUS_COLORS = {
 };
 
 const MyFiles = () => {
-  // Get the logged-in user
   const authenticatedUser =
     JSON.parse(localStorage.getItem("authenticatedUser")) || {};
   const userEmail = authenticatedUser.email || "";
 
-  // Load only the logged-in user's files
   const [files, setFiles] = useState(() => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
     const user = users.find((u) => u.email === userEmail);
@@ -63,7 +59,6 @@ const MyFiles = () => {
   const [tat, setTat] = useState("");
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  // Update local storage when files change
   useEffect(() => {
     if (userEmail) {
       const users = JSON.parse(localStorage.getItem("users")) || [];
@@ -163,21 +158,21 @@ const MyFiles = () => {
           maxHeight: "60vh",
           overflow: "auto",
           "&::-webkit-scrollbar": {
-            width: "1px", // Thin scrollbar width
+            width: "1px",
             height: "4px",
           },
           "&::-webkit-scrollbar-track": {
-            background: "#f0f0f0", // Light gray track
+            background: "#f0f0f0",
             borderRadius: "10px",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#888", // Dark gray thumb
+            background: "#888",
             borderRadius: "10px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555", // Darker thumb on hover
+            background: "#555",
           },
-          scrollbarWidth: "2px", // For Firefox
+          scrollbarWidth: "2px",
         }}
       >
         <Table stickyHeader>
@@ -313,12 +308,10 @@ const MyFiles = () => {
         </Box>
       )}
 
-      {/* File Picker */}
       {openPicker && (
         <PickerOverlay apikey={apiKey} onUploadDone={handleFileUpload} />
       )}
 
-      {/* File Details Modal */}
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <DialogTitle>File Details</DialogTitle>
         <DialogContent>
