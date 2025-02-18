@@ -27,7 +27,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("client");
+  const [role, setRole] = useState("admin");
   const [errors, setErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -38,6 +38,7 @@ const Login = () => {
   const authenticatedUser = useSelector(
     (state) => state.user.authenticatedUser
   );
+  const adminExists = useSelector((state) => state.user);
 
   useEffect(() => {
     if (authenticatedUser) {
@@ -72,6 +73,9 @@ const Login = () => {
         "Password must be 8+ characters, include uppercase, lowercase, number, and special character";
 
     if (activeTab === 1 && !role) newErrors.role = "Role is required";
+    if (activeTab === 1 && role === "client" && !adminExists)
+      newErrors.role =
+        "You must have an admin role created before creating a client.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -263,9 +267,12 @@ const Login = () => {
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
                       error={!!errors.role}
+                      disabled={adminExists.users[0]?.role !== "admin"}
                     >
+                      {adminExists.users[0]?.role !== "admin" && (
+                        <MenuItem value="admin">Admin</MenuItem>
+                      )}
                       <MenuItem value="client">Client</MenuItem>
-                      <MenuItem value="admin">Admin</MenuItem>
                     </Select>
                   </FormControl>
                   <Button
