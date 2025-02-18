@@ -61,6 +61,7 @@ const MyFiles = () => {
   const [fromLanguage, setFromLanguage] = useState("");
   const [toLanguage, setToLanguage] = useState("");
   const [tat, setTat] = useState("");
+  const apiKey = process.env.REACT_APP_API_KEY;
 
   // Update local storage when files change
   useEffect(() => {
@@ -120,8 +121,6 @@ const MyFiles = () => {
     },
     { Uploaded: 0, "In Progress": 0, Completed: 0 }
   );
-
-  let apiKey = "AuxSCyn1SbGrSK5q1Rohgz";
 
   return (
     <Container sx={{ width: "100%", px: 3, mt: 4 }}>

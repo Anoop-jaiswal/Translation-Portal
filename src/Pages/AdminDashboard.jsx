@@ -47,6 +47,7 @@ const AdminDashboard = () => {
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [translatedFile, setTranslatedFile] = useState(null);
+  const apiKey = process.env.REACT_APP_API_KEY;
 
   const files = users.flatMap((user) =>
     user.files.map((file) => ({
@@ -155,8 +156,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     getLatestData();
   }, []);
-
-  let apiKey = "AuxSCyn1SbGrSK5q1Rohgz";
 
   return (
     <Container sx={{ mt: 4 }}>
